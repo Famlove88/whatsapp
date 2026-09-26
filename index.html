@@ -6,7 +6,7 @@
 html{height:100%}
 body{height:100vh;height:100dvh;display:flex;flex-direction:column;overflow:hidden}
 #root{flex:1 1 0;display:flex;flex-direction:column;min-height:0}
-#root>.app-shell{flex:1 1 0;min-height:0;height:auto}
+#root>.app-shell{flex:1 1 0;min-height:0;height:auto;width:100%;max-width:1450px} /* width:100%: a flex item with auto margins would otherwise size to its widest row and overflow the phone */
 @media (width>=1450px){#root>.app-shell{height:auto}}
 #root>.welcome-page{flex:1 1 0;min-height:0;overflow:auto;justify-content:flex-start;justify-content:safe center;-webkit-overflow-scrolling:touch}
 #lk-bar{flex-shrink:0;display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:8px 12px;padding:8px 14px;background:#075e54;color:#fff;font-size:14px;line-height:1.5;text-align:center}
@@ -224,7 +224,7 @@ body{background:var(--app-bg);color:var(--foreground);letter-spacing:0}
 .lk-cloud-err{color:var(--destructive);font-weight:600;min-height:1.2em;margin-top:8px}
 .lk-cloud-small{font-size:.8rem;margin-top:12px}</style><style id="lk-chat">/* ===== لنا ولكم · الدردشة (LKChat) — navy/gold, Cairo ===== */
 .lk-msgs-tab{display:flex;flex-direction:column;min-height:0}
-.lk-msgs-tab[hidden]{display:none!important}
+.lk-msgs-tab[hidden],.lk-msgs-tab[data-state="inactive"]{display:none!important}
 .lk-chat-root{flex:1;min-height:0;height:100%;display:flex}
 .lkc{flex:1;min-height:0;display:grid;grid-template-columns:320px minmax(0,1fr);background:var(--background)}
 .lk-chat-badge{display:inline-grid;place-items:center;min-width:20px;height:20px;padding:0 6px;margin-inline-start:6px;border-radius:999px;background:var(--lk-rose);color:#fff;font-size:.72rem;font-weight:800;line-height:1;box-shadow:0 2px 6px rgba(214,69,69,.35)}
@@ -336,6 +336,18 @@ body{background:var(--app-bg);color:var(--foreground);letter-spacing:0}
   .lkc-composer{padding:10px 10px max(12px,env(safe-area-inset-bottom))}
   .lkc-jump{bottom:84px}
 }
+/* narrow phones: four tabs must fit on one row (scroll as a last resort, never widen the page) */
+@media (width<=760px){
+  .top-tabs{overflow-x:auto;overscroll-behavior-x:contain;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+  .top-tabs::-webkit-scrollbar{display:none}
+  .top-tabs [data-slot=tabs-trigger]{flex:1 0 auto;white-space:nowrap}
+}
+@media (width<=430px){
+  .top-tabs{gap:4px;padding:8px 8px!important}
+  .top-tabs [data-slot=tabs-trigger]{padding:8px 9px;font-size:.8rem;gap:4px;min-height:38px}
+  .top-tabs [data-slot=tabs-trigger] svg{display:none}
+  .lk-chat-badge{min-width:18px;height:18px;font-size:.68rem;margin-inline-start:4px}
+}
 @media print{.lk-msgs-tab{display:none!important}}</style></head>
 <body><div id="lk-bar" hidden></div><div id="root"><p style="text-align:center;padding:40px;font-family:Cairo,Tahoma,Arial,sans-serif">عم نفتح البرنامج…</p></div><noscript>فعّل JavaScript في المتصفح لتشغيل البرنامج.</noscript><script>
 /* لنا ولكم — helper layer (LK) · v3.0 · loaded before the app bundle */
@@ -350,7 +362,7 @@ body{background:var(--app-bg);color:var(--foreground);letter-spacing:0}
   var TOKEN_RE = /^[a-f0-9]{64}$/;
 
   var LK = window.LK = {
-    version: "3.1.0",
+    version: "3.1.1",
     baseTitle: document.title,
     iconUrl: "icon-192.png",
     vis: [],
@@ -1179,7 +1191,7 @@ if (typeof window.LK_FIREBASE_CONFIG === "undefined") window.LK_FIREBASE_CONFIG 
     var d = new Date(ms); return (new Date().getFullYear() === Number(k.slice(0, 4)) ? fmtDayLong : fmtDayYear).format(d);
   }
   function initial(name) { return String(name || "?").trim().slice(0, 1); }
-  function visible() { return !!(S.root && S.mounted && document.visibilityState === "visible" && !S.root.closest("[hidden]") && S.root.offsetParent !== null); }
+  function visible() { return !!(S.root && S.mounted && document.visibilityState === "visible" && !S.root.closest("[hidden],[data-state=\"inactive\"]") && S.root.offsetParent !== null); }
   function toast(kind, msg) { try { if (window.LK && LK.toast && LK.toast[kind]) LK.toast[kind](msg); } catch (e) {} }
   function linkify(text, parent) {
     var re = /(https?:\/\/[^\s<]+|www\.[^\s<]+)/gi, last = 0, m;
