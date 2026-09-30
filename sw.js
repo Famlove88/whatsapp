@@ -1,8 +1,8 @@
-/* لنا ولكم — service worker · v3.2.0
+/* لنا ولكم — service worker · v3.2.1
    Caches only this app's own shell under the "lanalakom-" prefix and never touches
    other apps' caches on the same origin. API calls (other origins) pass straight through. */
 const PREFIX = "lanalakom-";
-const CACHE = PREFIX + "v3.2.0";
+const CACHE = PREFIX + "v3.2.1";
 const SHELL = [
   "./",
   "./index.html",

@@ -260,7 +260,57 @@ body{background:var(--app-bg);color:var(--foreground);letter-spacing:0}
 .lkd-btns{display:flex;gap:10px;margin-top:14px}.lkd-btns button{flex:1;min-height:44px;border-radius:12px;border:1px solid var(--border);background:#fff;font:inherit;font-weight:700;cursor:pointer}
 .lkd-btns .lkd-ok{background:var(--lk-rose);border-color:var(--lk-rose);color:#fff}.lkd-btns .lkd-ok:disabled{opacity:.6}
 @media (max-width:640px){.lk-totals{margin:0 10px 8px;padding:10px}.lkt-grid{gap:8px}.lkt-card{padding:8px}.lkt-row{font-size:.78rem}.lkt-sub{font-size:.7rem}}
-@media print{.lk-noprint,.lk-del,.lkd-back{display:none!important}.lk-totals.report{box-shadow:none;border:1px solid #ddd}.lkt-table th{background:#eee!important;color:#000!important}}</style><style id="lk-chat">/* ===== لنا ولكم · الدردشة (LKChat) — navy/gold, Cairo ===== */
+@media print{.lk-noprint,.lk-del,.lkd-back{display:none!important}.lk-totals.report{box-shadow:none;border:1px solid #ddd}.lkt-table th{background:#eee!important;color:#000!important}}
+
+/* ---------- v3.2.1: قراءة المحادثة — مساحة أكبر للحركات، فقاعات مضغوطة، شريط مجاميع مطوي ---------- */
+.lk-totals.chat{margin:0;border-radius:0;border-width:1px 0 0;box-shadow:none;padding:6px 16px}
+.lk-totals.chat .lkt-head{margin-bottom:0;font-size:.82rem;flex-wrap:nowrap}
+.lk-totals.chat:not(.min) .lkt-head{margin-bottom:6px}
+.lk-totals.chat .lkt-head strong::after{content:" ▴";color:var(--lk-gold-ink)}.lk-totals.chat:not(.min) .lkt-head strong::after{content:" ▾"}
+.lk-totals.chat .lkt-mini{margin-inline-start:auto;margin-inline-end:10px}
+.lk-totals.chat .lkt-card{padding:6px 10px}
+.chat-scroll{padding:12px 18px}
+.chat-row{margin-bottom:8px}
+.message{padding:8px 13px 7px!important;border-radius:16px 5px 16px 16px!important;box-shadow:0 3px 10px rgba(11,26,43,.07)!important;display:flex;flex-wrap:wrap;column-gap:8px;align-items:center}
+.message>*{flex:1 0 100%;min-width:0}
+.message>.message-actions{flex:0 0 auto}
+.message-top{font-size:.8rem}
+.message-value{margin-top:2px;gap:6px!important}
+.message-value strong{font-size:1.3rem!important}
+.message-value .direction-pill{font-size:.78rem;padding:1px 9px}
+.message-party{margin:1px 0!important;font-size:.74rem!important}
+.message-note{margin:5px 0!important;padding:5px 10px!important;font-size:.88rem!important}
+.message-footer{margin-top:5px!important;font-size:.76rem!important}
+.message-reason{margin-top:5px!important;padding-top:5px!important;font-size:.82rem!important}
+.message-actions{margin-top:7px!important;gap:6px!important}
+.message-actions button{min-height:32px!important;font-size:.8rem!important;padding-inline:11px!important}
+.day-marker{margin:6px auto;font-size:.74rem;padding:2px 12px}
+.composer{padding:8px 16px 10px!important}
+.composer-directions{gap:8px!important;margin-bottom:8px!important;max-width:380px!important}
+.direction-choice{padding:6px 10px!important;min-height:0!important;font-size:.82rem!important}
+.composer-fields{gap:8px!important}
+.composer-fields label{margin-bottom:2px!important;font-size:.72rem!important}
+.composer input,.composer [data-slot=select-trigger]{min-height:40px!important}
+.composer #amount{font-size:1.05rem!important}
+.send-button{min-height:40px!important;width:46px!important}
+.composer-caption{margin-top:5px!important;font-size:.72rem!important}
+.chat-heading{padding:8px 18px!important}
+@media (max-width:640px){.chat-scroll{padding:10px 8px}.composer{padding:6px 10px 8px!important}.composer-caption{display:none}.lk-totals.chat{padding:5px 10px}}
+.chat-heading + .mobile-balance + div.border-b{padding-top:3px!important;padding-bottom:3px!important;min-height:0}
+.chat-heading .small{margin:0}
+@media (min-width:900px){
+  .composer{display:flex!important;flex-wrap:wrap;gap:6px 14px;align-items:flex-end}
+  .composer-directions{flex:0 0 290px;margin-bottom:0!important}
+  .composer-fields{flex:1 1 420px}
+  .composer-caption{flex:1 0 100%;margin-top:2px!important}
+}
+@media (max-width:640px){
+  .chat-heading{padding:6px 12px!important}.chat-heading .small{display:none}
+  .composer-fields label{display:none!important}
+  .composer-directions{margin-bottom:6px!important}
+  .message-actions .lk-del,.message-actions button{flex:0 0 auto}
+  .mobile-balance{padding:6px 12px!important}
+}</style><style id="lk-chat">/* ===== لنا ولكم · الدردشة (LKChat) — navy/gold, Cairo ===== */
 .lk-msgs-tab{display:flex;flex-direction:column;min-height:0}
 .lk-msgs-tab[hidden],.lk-msgs-tab[data-state="inactive"]{display:none!important}
 .lk-chat-root{flex:1;min-height:0;height:100%;display:flex}
@@ -400,7 +450,7 @@ body{background:var(--app-bg);color:var(--foreground);letter-spacing:0}
   var TOKEN_RE = /^[a-f0-9]{64}$/;
 
   var LK = window.LK = {
-    version: "3.2.0",
+    version: "3.2.1",
     baseTitle: document.title,
     iconUrl: "icon-192.png",
     vis: [],
@@ -1246,9 +1296,10 @@ if (typeof window.LK_FIREBASE_CONFIG === "undefined") window.LK_FIREBASE_CONFIG 
   function build(mode, shop, day) { var t = window.LKAPI.tally(shop, day); return { html: mode === "report" ? reportHtml(t) : chatHtml(t), sig: sig(t) }; }
   function selectedDay() { var i = document.querySelector(".tab-content input[type=date]"); return i && i.value ? i.value : ""; }
 
+  function openPref() { try { return localStorage.getItem("lana-lakom:totalsOpen") === "1"; } catch (e) { return false; } }
   LK.totalsEl = function (C, mode, me) {
     var b; try { b = build(mode, me.shop, mode === "report" ? selectedDay() : ""); } catch (e) { b = { html: "", sig: "" }; }
-    return C.createElement("div", { className: "lk-totals " + mode + (mode === "chat" && window.innerWidth <= 640 ? " min" : ""), "data-mode": mode, "data-shop": me.shop, "data-sig": b.sig, dangerouslySetInnerHTML: { __html: b.html } });
+    return C.createElement("div", { className: "lk-totals " + mode + (mode === "chat" && !openPref() ? " min" : ""), "data-mode": mode, "data-shop": me.shop, "data-sig": b.sig, dangerouslySetInnerHTML: { __html: b.html } });
   };
   function refresh() {
     document.querySelectorAll(".lk-totals").forEach(function (el) {
@@ -1261,7 +1312,7 @@ if (typeof window.LK_FIREBASE_CONFIG === "undefined") window.LK_FIREBASE_CONFIG 
     });
   }
   window.addEventListener("lk:entries", function () { setTimeout(refresh, 0); });
-  document.addEventListener("click", function (e) { var h = e.target && e.target.closest && e.target.closest(".lk-totals.chat .lkt-head"); if (h) h.parentNode.classList.toggle("min"); });
+  document.addEventListener("click", function (e) { var h = e.target && e.target.closest && e.target.closest(".lk-totals.chat .lkt-head"); if (h) { var on = h.parentNode.classList.toggle("min"); try { localStorage.setItem("lana-lakom:totalsOpen", on ? "0" : "1"); } catch (x) {} } });
   document.addEventListener("change", function (e) { if (e.target && e.target.type === "date") setTimeout(refresh, 0); }, true);
   document.addEventListener("input", function (e) { if (e.target && e.target.type === "date") setTimeout(refresh, 0); }, true);
 
